@@ -74,13 +74,4 @@ public class HexCoder {
             return;
         }
     }
-
-    private void HexEncode(){
-
-    }
-
-    private void HexDecode(){
-
-    }
-
 }
