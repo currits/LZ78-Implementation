@@ -11,6 +11,7 @@ public class HexCoder {
         //when back check for if & operation gives 1011 or 00001011 and if that matters
         //is hex hex if its more than four bits?
         //is all this right?
+        
         try {
             int param = Integer.parseInt(args[0]);
             if (param == 0){
