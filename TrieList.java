@@ -21,7 +21,7 @@ public class TrieList {
             newNode.setNext(head);
             head = newNode;
         }
-		//otherwise, interate through the list and insert the node
+		//otherwise, iterate through the list and insert the node
         //assuming no value appears in a level more than once
         //assuming ascending value order
 		else {
@@ -60,12 +60,14 @@ public class TrieList {
 	}
 	
 	//Method for checking if the list contains the passed integer
-	//Returns true or false
-	public boolean has(int i){
+	//Returns an describing the index (count of nodes in linked list) of the node with the value, or -1 if not present
+	public int has(int i){
 		
+		int count = 0;
+
 		//first checks if the list is empty, stopping here if it is
 		if (isEmpty()){
-			return false;
+			return -1;
 		}
 		
 		//then creates a node reference to be used to loop through
@@ -75,13 +77,15 @@ public class TrieList {
 		while(current != null){
 			//if the current node has the value, returns true
 			if (current.getValue() == i){
-				return true;
+				return count;
 			}
 			//move the pointer along the list
 			current = current.getNext();
+			//incrememnt count
+			count++;
 		}
 		//if the end of the list is reached and the value is not found, return false
-		return false;
+		return -1;
 	}
 	
     //can chuck this perhaps
@@ -106,7 +110,7 @@ public class TrieList {
 	public void remove(int i){
 		
 		//first checks if the loop is empty, stops if it is
-		if(isEmpty() || !has(i)){
+		if(isEmpty() || has(i) == -1){
 			return;
 		}
 		

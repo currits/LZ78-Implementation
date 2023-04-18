@@ -27,7 +27,8 @@ public class HexCoder {
                         if (hexIn == -1)
                             break;
                         nibbleLower = hexIn & mask;
-                        hexIn = hexIn >> 4;
+                        //logical shift
+                        hexIn = hexIn >>> 4;
                         nibbleUpper = hexIn & mask;
                         writer.write(nibbleUpper);
                         writer.write(delimiter);
@@ -51,8 +52,6 @@ public class HexCoder {
                     byte byteOut;
                     int hexIn1 = 0;
                     int hexIn2 = 0;
-                    //need to implement handling of loop condition true when cleanly reaching end of stream
-                    //need to implement handling of hexIn1 != -1 and hexIn2 == -1
                     while (true){
                         //reads assuming a space character seperating every hex value
                         hexIn1 = reader.read();
@@ -61,8 +60,10 @@ public class HexCoder {
                         hexIn2 = reader.read();
                         reader.read();
                         if (hexIn2 != -1){
+                            //bitwise or to write incoming hex values as a merged byte
                             byteOut = (byte) ((hexIn1 << 4) | hexIn2);
                         }
+                            //otherwise, end of stream and only one bit left, so output that
                         else if (hexIn1 != -1){
                             byteOut = (byte)hexIn1;
                         }
