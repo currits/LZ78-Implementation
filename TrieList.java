@@ -7,11 +7,8 @@ public class TrieList {
     }
 
     //sorting of values in list, probaly best done here
-	public void insert(int i, int p){
-		
-		//create new node from passed int
-		TrieNode newNode = new TrieNode(i, p);
-		
+	public void insert(TrieNode newNode){
+		int i = newNode.getValue();
 		//assigns it to the head if the list is empty
 		if(isEmpty()){
 			head = newNode;
@@ -82,6 +79,27 @@ public class TrieList {
 		}
 		//if the end of the list is reached and the value is not found, return false
 		return false;
+	}
+
+	//method to return a node with the passed phrase
+	//to access the node's stores value and phrase number
+	//could replace has(method)
+	public TrieNode find(int i){
+		if (isEmpty() || !has(i))
+			return null;
+
+		TrieNode current = head;
+		//while loop that runs for as long as the reference pointer hasnt reached the end of the list(is null)
+		while(current != null){
+			//if the current node has the value, returns true
+			if (current.getValue() == i){
+				break;
+			}
+			//move the pointer along the list
+			current = current.getNext();
+		}
+		return current;
+		
 	}
 	
     //can chuck this perhaps
@@ -161,6 +179,67 @@ public class TrieList {
 				//then move loop along
 				current = current.getNext();
 			}
+		}
+	}
+
+	public TrieNode getHead(){
+		return head;
+	}
+
+	/**
+	 * Ancilliary Methods for traversing a list
+	 * Call using the TrieList class instead of on a TrieList object
+	 */
+
+	//method to traverse phrase list depth first
+	public void depthTraverse(TrieList level){
+		//start with the passed list root node
+		TrieNode current = level.getHead();
+		//loop, using while;true as linkedlist is not array and thus cannot for;each
+		while(true){
+			//if theres a level, go down it first and call this method
+			if (current.getDown() != null)
+				depthTraverse(current.getDown());
+			//otherwise, shift along until we reach the end of the list
+			else if (current.getNext() != null){
+				current = current.getNext();
+			}
+			//when we are at the deepest level, last item, stop looping
+			else
+				break;
+		}
+		//do the thing we want to do here, for now just dumping the entire level of the depth we have reached
+		level.dump();
+	}
+
+	//method to traverse phrase list depth first
+	public void widthTraverse(TrieList rootList){
+		//trie list to store the heads of each list along a level
+		TrieList queueList = new TrieList();
+		//node to iterate with
+		TrieNode node = rootList.getHead();
+		//loop
+		while(true){
+			//do the thing we want using the current node here, in this case just printing it
+			System.out.println("Value: " + node.getValue() + ", phrase: " + node.getPhraseNumber());
+			//then check if there is a level descending from this node
+			if (node.getDown() != null){
+				//store that head if there is
+				queueList.insert(node.getDown().getHead());
+			}
+			//then check if this node has more nodes in it's list
+			if(node.getNext() != null){
+				//if so, shift and continue looping (to act on the next node)
+				node = node.getNext();
+			}
+			//otherwise, if at the end of a list, pop the head of the queue to start iterating through
+			else if(!queueList.isEmpty()){
+				node = queueList.getHead();
+				queueList.remove(node.getValue());
+			}
+			//otherwise, if at lowermost level of right most node, we are done so break
+			else
+				break;
 		}
 	}
 

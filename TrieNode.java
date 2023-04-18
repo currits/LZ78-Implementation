@@ -35,5 +35,9 @@ public class TrieNode {
     public TrieList getDown(){
         return down;
     }
-    
+
+    public void setDown(TrieList newDown){
+        down = newDown;
+    }
+
 }

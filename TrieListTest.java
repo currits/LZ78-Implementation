@@ -15,7 +15,7 @@ public class TrieListTest {
         tList.dump();
         System.out.println("Inserting values 5, 4, 3, 2, 1");
         for (int i = 0; i < 5; i++){
-            tList.insert(testArray[i], i);
+            tList.insert(new TrieNode(testArray[i], i));
         }
         System.out.println("Trie List length: " + tList.length());
         tList.dump();
