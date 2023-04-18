@@ -1,7 +1,6 @@
 import java.io.*;
 public class HexCoder {
     static int mask = 0x0F;
-    static String delimiter = " ";
     public static void main(String[] args){
         // We must decide if we want our byte-to-hex ouput to be raw hex data or written as strings mapping to hex ie 1-F
         // current writes raw hex values seperated by spaces, change the delimiter as needed     
@@ -31,9 +30,7 @@ public class HexCoder {
                         hexIn = hexIn >>> 4;
                         nibbleUpper = hexIn & mask;
                         writer.write(nibbleUpper);
-                        writer.write(delimiter);
                         writer.write(nibbleLower);
-                        writer.write(delimiter);
                     }
                     writer.flush();
                     writer.close();
@@ -56,9 +53,7 @@ public class HexCoder {
                         //reads assuming a space character seperating every hex value
                         hexIn1 = reader.read();
                         //skip the space after each read character
-                        reader.read();
                         hexIn2 = reader.read();
-                        reader.read();
                         if (hexIn2 != -1){
                             //bitwise or to write incoming hex values as a merged byte
                             byteOut = (byte) ((hexIn1 << 4) | hexIn2);

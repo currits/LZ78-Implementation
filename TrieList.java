@@ -7,10 +7,10 @@ public class TrieList {
     }
 
     //sorting of values in list, probaly best done here
-	public void insert(int i){
+	public void insert(int i, int p){
 		
 		//create new node from passed int
-		TrieNode newNode = new TrieNode(i);
+		TrieNode newNode = new TrieNode(i, p);
 		
 		//assigns it to the head if the list is empty
 		if(isEmpty()){
@@ -21,7 +21,7 @@ public class TrieList {
             newNode.setNext(head);
             head = newNode;
         }
-		//otherwise, iterate through the list and insert the node
+		//otherwise, interate through the list and insert the node
         //assuming no value appears in a level more than once
         //assuming ascending value order
 		else {
@@ -60,14 +60,12 @@ public class TrieList {
 	}
 	
 	//Method for checking if the list contains the passed integer
-	//Returns an describing the index (count of nodes in linked list) of the node with the value, or -1 if not present
-	public int has(int i){
+	//Returns true or false
+	public boolean has(int i){
 		
-		int count = 0;
-
 		//first checks if the list is empty, stopping here if it is
 		if (isEmpty()){
-			return -1;
+			return false;
 		}
 		
 		//then creates a node reference to be used to loop through
@@ -77,15 +75,13 @@ public class TrieList {
 		while(current != null){
 			//if the current node has the value, returns true
 			if (current.getValue() == i){
-				return count;
+				return true;
 			}
 			//move the pointer along the list
 			current = current.getNext();
-			//incrememnt count
-			count++;
 		}
 		//if the end of the list is reached and the value is not found, return false
-		return -1;
+		return false;
 	}
 	
     //can chuck this perhaps
@@ -110,7 +106,7 @@ public class TrieList {
 	public void remove(int i){
 		
 		//first checks if the loop is empty, stops if it is
-		if(isEmpty() || has(i) == -1){
+		if(isEmpty() || !has(i)){
 			return;
 		}
 		
@@ -161,7 +157,7 @@ public class TrieList {
 			//loop that will run until end of the list
 			while (current != null){
 				//print the current node's value onto a new line
-				System.out.println(current.getValue());
+				System.out.println("Value: " + current.getValue() + ", phrase: " + current.getPhraseNumber());
 				//then move loop along
 				current = current.getNext();
 			}
