@@ -8,38 +8,20 @@ public class TrieList {
 
     //sorting of values in list, probaly best done here
 	public void insert(TrieNode newNode){
-		int i = newNode.getValue();
 		//assigns it to the head if the list is empty
 		if(isEmpty()){
 			head = newNode;
 		}
-        //check if new node needs to be the head
-        else if (head.getValue() > i){
-            newNode.setNext(head);
-            head = newNode;
-        }
-		//otherwise, interate through the list and insert the node
-        //assuming no value appears in a level more than once
-        //assuming ascending value order
 		else {
 			TrieNode current = head;
             TrieNode next = head.getNext();
-            while(true){
-                //if list of one node, add newNode
-                if (next == null){
-                    current.setNext(newNode);
-                    break;
-                }
-                //if newNode fits between current and next, insert here
-                else if(next.getValue() < i){
-                    newNode.setNext(next);
-                    current.setNext(next);
-                    break;
-                }
-                //otherwise, move pointers along
-                current = next;
-                next = current.getNext();
+			//loop to move along to end of list
+            while(next != null){
+				current = next;
+				next = next.getNext();
             }
+			//add new node to end
+			current.setNext(newNode);
 		}
 	}
 	
@@ -58,7 +40,7 @@ public class TrieList {
 	
 	//Method for checking if the list contains the passed integer
 	//Returns true or false
-	public boolean has(int i){
+	public boolean has(char i){
 		
 		//first checks if the list is empty, stopping here if it is
 		if (isEmpty()){
@@ -71,7 +53,7 @@ public class TrieList {
 		//while loop that runs for as long as the reference pointer hasnt reached the end of the list(is null)
 		while(current != null){
 			//if the current node has the value, returns true
-			if (current.getValue() == i){
+			if (Character.compare(current.getValue(), i) == 0){
 				return true;
 			}
 			//move the pointer along the list
@@ -84,7 +66,7 @@ public class TrieList {
 	//method to return a node with the passed phrase
 	//to access the node's stores value and phrase number
 	//could replace has(method)
-	public TrieNode find(int i){
+	public TrieNode find(char i){
 		if (isEmpty() || !has(i))
 			return null;
 
@@ -92,7 +74,7 @@ public class TrieList {
 		//while loop that runs for as long as the reference pointer hasnt reached the end of the list(is null)
 		while(current != null){
 			//if the current node has the value, returns true
-			if (current.getValue() == i){
+			if (Character.compare(current.getValue(), i) == 0){
 				break;
 			}
 			//move the pointer along the list
@@ -121,7 +103,7 @@ public class TrieList {
 	}
 	
     //can also chuck this, dont think we'll be removing items from the list
-	public void remove(int i){
+	public void remove(char i){
 		
 		//first checks if the loop is empty, stops if it is
 		if(isEmpty() || !has(i)){
@@ -135,7 +117,7 @@ public class TrieList {
 		//lopp that will run until the end of the list
 		while (current != null){
 			//if the node ahead has the value we want to delete
-			if (current.getValue() == i){
+			if (Character.compare(current.getValue(), i) == 0){
 				//create a new reference to it
 				TrieNode toRemove = current;
 				//set the current node's Next to the node beyond the deletion node
@@ -154,7 +136,7 @@ public class TrieList {
 		}
 		
 		//if the node to be deleted is the head, then remove that
-		if (head.getValue() == i){
+		if (Character.compare(head.getValue(), i) == 0){
 			head = head.getNext();
 		}
 		

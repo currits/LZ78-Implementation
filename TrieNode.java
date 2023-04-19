@@ -5,18 +5,18 @@ public class TrieNode {
     //each node's next lower level is another whole list
     private TrieList down;
     //since we're dealing in hex nibbles I imagine this needs to be an int
-    private int value;
+    private char value;
     //an int to store the phrase number this node holds
     private int phraseNum;
 
-    public TrieNode(int v, int p){
+    public TrieNode(char v, int p){
         next = null;
         down = null;
         value = v;
-        phraseNum = v;
+        phraseNum = p;
     }
 
-    public int getValue(){
+    public char getValue(){
 		return value;
 	}
     

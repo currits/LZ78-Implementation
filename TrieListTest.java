@@ -1,7 +1,7 @@
 public class TrieListTest {
     public static void main(String[] args){
-        TrieNode testNode1 = new TrieNode(99, 0);
-        TrieNode testNode2 = new TrieNode(420, 1);
+        TrieNode testNode1 = new TrieNode('F', 0);
+        TrieNode testNode2 = new TrieNode('9', 1);
         testNode1.setNext(testNode2);
         System.out.println("Testing Node class:-");
         System.out.println("testNode1 value: " + testNode1.getValue());
@@ -11,7 +11,7 @@ public class TrieListTest {
         System.out.println("testNode1.setNext(testNode2) check: " + testNode1.getNext().getValue());
         System.out.println("testNode1 getDown(): " + testNode2.getDown());
         TrieList tList = new TrieList();
-        int[] testArray = {5, 4, 3, 2, 1};
+        char[] testArray = {'5', '4', '3', '2', '1'};
         tList.dump();
         System.out.println("Inserting values 5, 4, 3, 2, 1");
         for (int i = 0; i < 5; i++){

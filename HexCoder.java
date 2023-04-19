@@ -3,8 +3,8 @@ public class HexCoder {
     static int mask = 0x0F;
     public static void main(String[] args){
         // We must decide if we want our byte-to-hex ouput to be raw hex data or written as strings mapping to hex ie 1-F
-        // current writes raw hex values seperated by spaces, change the delimiter as needed     
-        // and proccesses input as if there is a character (a space) in between each wanted character
+        // current writes raw hex values, add delimiter if needed  
+        // currently proccesses input assuming no delimiter, can be changed to handle delimiter
         if (args.length == 0) {
             System.out.println("Usage: HexCoder {0|1}");
             System.out.println("0:  Encodes Standard input stream into Hexadecimal");
