@@ -60,7 +60,6 @@ public class HexCoder {
                         }
                         writer.write(byteOut);
                     }
-                    writer.flush();
                     writer.close();
                     reader.close();
                 } catch (Exception e) {
