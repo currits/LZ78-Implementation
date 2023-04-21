@@ -6,7 +6,6 @@
 import java.io.*;
 
 public class HexCoder {
-    static int mask = 0x0F;
 
     public static void main(String[] args) throws IOException {
 
@@ -30,8 +29,6 @@ public class HexCoder {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
-
         // if encoding to hex
         if (param == 0) {
             int c;
@@ -48,15 +45,14 @@ public class HexCoder {
             StringBuilder sb = new StringBuilder();
 
             String hex = reader.readLine();
-            System.out.println(hex);
 
             for (int i = 0; i < hex.length() - 1; i += 2) {
 
-                // grab the hex in pairs
+                // Grab the hex in pairs
                 String output = hex.substring(i, (i + 2));
-                // convert hex to decimal
+                // Convert hex to int
                 int decimal = Integer.parseInt(output, 16);
-                // convert the decimal to character
+                // Convert and add to string
                 sb.append((char) decimal);
             }
 
