@@ -1,88 +1,105 @@
+
+///Name:
+///ID:
+///Name: Ethyn Gillies
+///ID: 1503149
 import java.io.*;
+
 public class HexCoder {
-    static int mask = 0x0F;
-    public static void main(String[] args){
-        // We must decide if we want our byte-to-hex ouput to be raw hex data or written as strings mapping to hex ie 1-F
-        // current writes raw hex values, add delimiter if needed  
-        // currently proccesses input assuming no delimiter, can be changed to handle delimiter
+
+    public static void main(String[] args) throws IOException {
+
         if (args.length == 0) {
             System.out.println("Usage: HexCoder {0|1}");
             System.out.println("0:  Encodes Standard input stream into Hexadecimal");
             System.out.println("1:  Decodes Standard input stream from Hexadecimal into bytes");
             return;
         }
+
+        int param = -1;
+
         try {
-            int param = Integer.parseInt(args[0]);
-            //if encoding to hex
-            if (param == 0){
-                try {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
-                    int hexIn = 0;
-                    int nibbleUpper;
-                    int nibbleLower;
-                    while (true){
-                        hexIn = reader.read();
-                        if (hexIn == -1)
-                            break;
-                        nibbleLower = hexIn & mask;
-                        //logical shift
-                        hexIn = hexIn >>> 4;
-                        nibbleUpper = hexIn & mask;
-                        writer.write(nibbleUpper);
-                        writer.write(nibbleLower);
-                    }
-                    writer.flush();
-                    writer.close();
-                    reader.close();
-                }
-                catch(Exception e){
-                    System.out.print("HexCode error: ");
-                    e.printStackTrace();
-                }
-            }
-            //if decoding to ascii
-            else if (param == 1){
-                try {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
-                    byte byteOut;
-                    int hexIn1 = 0;
-                    int hexIn2 = 0;
-                    while (true){
-                        //reads assuming a space character seperating every hex value
-                        hexIn1 = reader.read();
-                        //skip the space after each read character
-                        hexIn2 = reader.read();
-                        if (hexIn2 != -1){
-                            //bitwise or to write incoming hex values as a merged byte
-                            byteOut = (byte) ((hexIn1 << 4) | hexIn2);
-                        }
-                            //otherwise, end of stream and only one bit left, so output that
-                        else if (hexIn1 != -1){
-                            byteOut = (byte)hexIn1;
-                        }
-                        else{
-                            break;
-                        }
-                        writer.write(byteOut);
-                    }
-                    writer.flush();
-                    writer.close();
-                    reader.close();
-                }
-                catch(Exception e){
-                    System.out.print("HexCode error: ");
-                    e.printStackTrace();
-                }
-            }
-            else
-                return;
-        }
-        // Otherwise, print an error and return
-        catch (Exception e) {
-            System.out.println("The parameter entered was not an integer");
+            param = Integer.parseInt(args[0]);
+        } catch (Exception e) {
+            e.printStackTrace();
             return;
         }
+
+        // Reader and writer for in and out
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+
+        // if encoding to hex
+        if (param == 0) {
+            int c;
+
+            while ((c = reader.read()) != -1) {
+                // Regex formatting into hexadecimal
+                String hex = String.format("%02x", c);
+                writer.write(hex);
+            }
+        }
+        // if decoding to ascii
+        else if (param == 1) {
+
+            StringBuilder sb = new StringBuilder();
+
+            String hex = reader.readLine();
+
+            for (int i = 0; i < hex.length() - 1; i += 2) {
+
+                // Grab the hex in pairs
+                String output = hex.substring(i, (i + 2));
+                // Convert hex to int
+                int decimal = Integer.parseInt(output, 16);
+                // Convert and add to string
+                sb.append((char) decimal);
+            }
+
+            writer.write(sb.toString());
+
+            /*
+             * int c1 = 0;
+             * int c2 = 0;
+             * 
+             * // We can read a second character inside the while loop since it will always
+             * be
+             * // non-null due to eacha ascii character needing 2 hex digits
+             * try {
+             * while ((c1 = reader.read()) != -1) {
+             * 
+             * if ((c2 = reader.read()) == -1) {
+             * continue;
+             * }
+             * 
+             * // Create a string with both characters (we trim it because read() works
+             * weird
+             * // sometimes
+             * String str = ("" + (char) c1 + (char) c2).trim();
+             * 
+             * // Check if the string is empty, if not, parse it as a character using radix
+             * 16
+             * // (base16 aka hexadecimal)
+             * if (!str.equals("")) {
+             * writer.write((char) Integer.parseInt(str, 16));
+             * }
+             * }
+             * } catch (Exception e) {
+             * System.out.println(c1);
+             * System.out.println(c2);
+             * e.printStackTrace();
+             * return;
+             * }
+             */
+
+        } else {
+            System.out.println("Usage: HexCoder {0|1}");
+            System.out.println("0:  Encodes Standard input stream into Hexadecimal");
+            System.out.println("1:  Decodes Standard input stream from Hexadecimal into bytes");
+        }
+
+        // Be a tidy kiwi!
+        writer.close();
+        reader.close();
     }
 }
