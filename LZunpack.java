@@ -26,24 +26,22 @@ public class LZunpack {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
-            
-            int in = 0;
+            String line = reader.readLine();
+            byte buffer[] = line.getBytes();
+            int bufferIndex = 0;
+            int bufferCap = buffer.length;
             int input = 0;
-            int phrase;
-            int mismatch;
 
             //loop for as long as there is input
-            while (in != -1){
+            while (bufferIndex < bufferCap){
                 //populate the input with packed bits
                 //only for as long there is space for at least a full byte
-                while (bitPosition <= 24){
+                while (bitPosition <= 24 && bufferIndex < bufferCap){
                     System.err.println("read loop");
                     //read in a byte
-                    in = reader.read();
-                    //stop reading in if end of stream
-                    if (in == -1){
-                        break;
-                    }
+                    int in = buffer[bufferIndex];
+                    //mark that byte as proccessed
+                    bufferIndex++;
                     //shift the input into position to be written
                     in = in << bitPosition;
                     //OR it in place
@@ -54,23 +52,44 @@ public class LZunpack {
 
                 //loop to proccess the input
                 //for as long as there is at least enough useful bits totalling a phrase-mismatch tuple
-                while (bitPosition > (phraseBitCount + mismatchedBitCount)){
+                while ((bitPosition >= (phraseBitCount + mismatchedBitCount))){
                     System.err.println("write loop");
                     //extract phrase number with bit mask
-                    phrase = input & phraseMask;
+                    int phrase = input & phraseMask;
                     //shift the input along
                     input = input >>> phraseBitCount;
                     //extract the mismatch character with bit mask
-                    mismatch = input & mismatchMask;
+                    int mismatch = input & mismatchMask;
                     //shift the input along
                     input = input >>> mismatchedBitCount;
                     //write the tuple to output with formatting (space seperated strings, new line)
-                    writer.write(String.valueOf(phrase) + " " + String.valueOf(mismatch));
+                    writer.write(phrase + " " + mismatch);
                     writer.newLine();
                     //shift the bit position tracker by the length of bits extracted (phrase + mismatch bit length)
                     bitPosition -= (phraseBitCount + mismatchedBitCount);
                 }
+            
             }
+            
+            //final repeat of write loop to capture remain bits (often just a phrase number and then a null character)
+            while (bitPosition > 0){
+                System.err.println("write loop");
+                //extract phrase number with bit mask
+                int phrase = input & phraseMask;
+                //shift the input along
+                input = input >>> phraseBitCount;
+                //extract the mismatch character with bit mask
+                int mismatch = input & mismatchMask;
+                //shift the input along
+                input = input >>> mismatchedBitCount;
+                //write the tuple to output with formatting (space seperated strings, new line)
+                writer.write(phrase + " " + mismatch);
+                writer.newLine();
+                //shift the bit position tracker by the length of bits extracted (phrase + mismatch bit length)
+                bitPosition -= (phraseBitCount + mismatchedBitCount);
+            }
+
+            System.err.println("Bits left: " + bitPosition + ", Byte array length: " + bufferCap);
             System.err.println("Finished");
             writer.close();
             reader.close();
