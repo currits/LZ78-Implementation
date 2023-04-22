@@ -30,6 +30,13 @@ public class LZdecode {
             // Splitting into int for phrase and char for character
             int phrase = Integer.parseInt(strings[0]);
             char mismatch = (char) Integer.parseInt(strings[1]);
+            //if the mismatch if null character, then we have reached end of stream
+            if (Character.compare(mismatch, '\0') == 0){
+                //so write the phrase and break
+                writer.write(dictionary.get(phrase - 1));
+                break;
+            }
+            
 
             // If the phrase is 0, we can just add it and add the value to the dictionary
             if (phrase == 0) {
