@@ -47,7 +47,9 @@ public class LZpack {
                     }
                     tuple = line.split("\\s+");
                     phrase = Integer.parseInt(tuple[0]);
+                    System.err.println(phrase);
                     mismatch = Integer.parseInt(tuple[1]);
+                    System.err.println(mismatch);
 
                     //get the phrase into bit position
                     phrase = phrase << bitPosition;
@@ -67,8 +69,8 @@ public class LZpack {
                 //while there is enough useful bits and buffer is not near full, store some number of chars into buffer
                 while (bufferIndex <= 62 && bitPosition >= 8){
                     System.err.println("Write loop");
-                    //extract lower order 16 bits (single character)
-                    byte out = (byte)output;
+                    //extract lower order 8 bits 
+                    byte out = (byte)(output & 0xFF);
                     //write it
                     buffer[bufferIndex] = out;
                     bufferIndex++;

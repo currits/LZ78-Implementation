@@ -24,24 +24,44 @@ public class LZunpack {
         int mismatchMask = 0xFF;
 
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
-            String line = reader.readLine();
-            byte buffer[] = line.getBytes();
-            int bufferIndex = 0;
-            int bufferCap = buffer.length;
+
+            BufferedInputStream reader = new BufferedInputStream(System.in);
+            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+            //buffer to read into fron inputstream
+            byte[] data = new byte[32];
+            int read = 0;
+            //read bytes from input
+            while ((read = reader.readNBytes(data, 0, data.length)) > 0){
+                //write them to the byteoutput stream
+                byteStream.write(data, 0, read);
+            }
+            //flush the bytestream
+            byteStream.flush();
+            //then store the byte stream as an array to work with
+            byte[] inputStream = byteStream.toByteArray();
+            //byte index counter and cap
+            int streamIndex = 0;
+            int streamCap = inputStream.length;
+            System.err.println("Inputstream length: " + streamCap);
             int input = 0;
+            boolean loop = true;
 
             //loop for as long as there is input
-            while (bufferIndex < bufferCap){
+            while (loop){
                 //populate the input with packed bits
                 //only for as long there is space for at least a full byte
-                while (bitPosition <= 24 && bufferIndex < bufferCap){
+                while (bitPosition <= 24){
                     System.err.println("read loop");
-                    //read in a byte
-                    int in = buffer[bufferIndex];
-                    //mark that byte as proccessed
-                    bufferIndex++;
+                    //check for end of stream
+                    if (streamIndex == streamCap-1){
+                        loop = false;
+                        break;
+                    }
+                    //read a byte
+                    int in = inputStream[streamIndex];
+                    //mark it as proccessed
+                    streamIndex++;
                     //shift the input into position to be written
                     in = in << bitPosition;
                     //OR it in place
@@ -89,7 +109,7 @@ public class LZunpack {
                 bitPosition -= (phraseBitCount + mismatchedBitCount);
             }
 
-            System.err.println("Bits left: " + bitPosition + ", Byte array length: " + bufferCap);
+            System.err.println("Bits left: " + bitPosition);
             System.err.println("Finished");
             writer.close();
             reader.close();
