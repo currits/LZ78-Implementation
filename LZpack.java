@@ -19,7 +19,7 @@ public class LZpack {
 
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+            BufferedOutputStream writer = new BufferedOutputStream(System.out);
             
             byte[] buffer = new byte[64];
             int bufferIndex = 0;
@@ -32,9 +32,7 @@ public class LZpack {
             while (line != null){
                 //if the buffer is near full, write it to output
                 if (bufferIndex >= 62){
-                    for(int l = 0; l <= bufferIndex; l++){
-                        writer.write(buffer[l]);
-                    }
+                    writer.write(buffer, 0, bufferIndex);
                     bufferIndex = 0;
                 }
 
@@ -66,13 +64,14 @@ public class LZpack {
                     //then loop again
                 }
 
-                //while there is enough useful bits and buffer is not near full, store some number of chars into buffer
+                //while there is enough useful bits and buffer is not near full, store some number of bytes into buffer
                 while (bufferIndex <= 62 && bitPosition >= 8){
                     System.err.println("Write loop");
                     //extract lower order 8 bits 
                     byte out = (byte)(output & 0xFF);
                     //write it
                     buffer[bufferIndex] = out;
+                    System.err.println(out);
                     bufferIndex++;
                     //track the bit position
                     bitPosition -= 8;
@@ -94,7 +93,7 @@ public class LZpack {
             //final write loop repeat to capture remaining bits
             while(bitPosition > 0){
                 System.err.println("Write loop");
-                //extract lower order 16 bits (single character)
+                //extract lower order 8 bits
                 byte out = (byte)output;
                 //write it
                 buffer[bufferIndex] = out;
@@ -105,10 +104,8 @@ public class LZpack {
                 output = output >>> 8;
             }
             //write the remaining bytes out after looping
-            for (int k = 0; k <= bufferIndex; k++){
-                writer.write(buffer[k]);
-            }
-            
+            writer.write(buffer, 0, bufferIndex);
+            writer.flush();
             System.err.println("Bits left: " + bitPosition);
             System.err.println("Finished");
             writer.close();

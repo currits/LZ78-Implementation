@@ -60,10 +60,13 @@ public class LZunpack {
                     }
                     //read a byte
                     int in = inputStream[streamIndex];
+                    System.err.println(in);
                     //mark it as proccessed
                     streamIndex++;
                     //shift the input into position to be written
-                    in = in << bitPosition;
+                    //this here line of code consumed 26 hours of my life spread over 4 days
+                    //beware software engineering, for there be monsters
+                    in = (in & 0xFF) << bitPosition;
                     //OR it in place
                     input = input | in;
                     //move the bit position tracker over by a byte
