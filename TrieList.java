@@ -1,12 +1,23 @@
+///Name:
+///ID:
+///Name: Ethyn Gillies
+///ID: 1503149
 public class TrieList {
 
 	private TrieNode head;
 
+	/**
+	 * Defines a list of TrieNodes to form a Trie structure
+	 */
 	public TrieList() {
 		head = null;
 	}
 
-	// sorting of values in list, probaly best done here
+	/**
+	 * Inserts a new node into the list of nodes
+	 * 
+	 * @param newNode The TrieNode to add to the list
+	 */
 	public void insert(TrieNode newNode) {
 		// assigns it to the head if the list is empty
 		if (isEmpty()) {
@@ -24,8 +35,11 @@ public class TrieList {
 		}
 	}
 
-	// Method to check if the list is empty
-	// returns true or false
+	/**
+	 * Checks if the list is empty
+	 * 
+	 * @return True if empty, false if not empty
+	 */
 	public boolean isEmpty() {
 		// checks if the head value is empty (null)
 		// list is empty if no head, not empty otherwise
@@ -36,9 +50,13 @@ public class TrieList {
 		}
 	}
 
-	// Method for checking if the list contains the passed integer
-	// Returns true or false
-	public boolean has(char i) {
+	/**
+	 * Checks if the list contains a certain character
+	 * 
+	 * @param c The character to search for
+	 * @return True if the character is found, false if not
+	 */
+	public boolean has(char c) {
 
 		// first checks if the list is empty, stopping here if it is
 		if (isEmpty()) {
@@ -52,7 +70,7 @@ public class TrieList {
 		// end of the list(is null)
 		while (current != null) {
 			// if the current node has the value, returns true
-			if (Character.compare(current.getValue(), i) == 0) {
+			if (Character.compare(current.getValue(), c) == 0) {
 				return true;
 			}
 			// move the pointer along the list
@@ -62,11 +80,15 @@ public class TrieList {
 		return false;
 	}
 
-	// method to return a node with the passed phrase
-	// to access the node's stores value and phrase number
-	// could replace has(method)
-	public TrieNode find(char i) {
-		if (isEmpty() || !has(i))
+	/**
+	 * Returns the node for which a character is specified, if it exists
+	 * 
+	 * @param c The character to search for
+	 * @return A TrieNode that contains the character specified, null is returned if
+	 *         the character is not found
+	 */
+	public TrieNode find(char c) {
+		if (isEmpty() || !has(c))
 			return null;
 
 		TrieNode current = head;
@@ -74,7 +96,7 @@ public class TrieList {
 		// end of the list(is null)
 		while (current != null) {
 			// if the current node has the value, returns true
-			if (Character.compare(current.getValue(), i) == 0) {
+			if (Character.compare(current.getValue(), c) == 0) {
 				break;
 			}
 			// move the pointer along the list
@@ -84,28 +106,11 @@ public class TrieList {
 
 	}
 
-	// Method to print the value of each node to the terminal
-	// probs only useful for testing
-	public void dump() {
-		// checks if empty and responds appropriately
-		System.out.println("TrieList dump from head:-");
-		if (isEmpty()) {
-			System.out.println("List is empty");
-		}
-		// otherwise, does the thing
-		else {
-			// reference pointer to loop with
-			TrieNode current = head;
-			// loop that will run until end of the list
-			while (current != null) {
-				// print the current node's value onto a new line
-				System.out.println("Value: " + current.getValue() + ", phrase: " + current.getPhraseNumber());
-				// then move loop along
-				current = current.getNext();
-			}
-		}
-	}
-
+	/**
+	 * Gets the head of the list
+	 * 
+	 * @return The head TrieNode of the list
+	 */
 	public TrieNode getHead() {
 		return head;
 	}

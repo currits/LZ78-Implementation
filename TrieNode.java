@@ -1,42 +1,83 @@
+///Name:
+///ID:
+///Name: Ethyn Gillies
+///ID: 1503149
 public class TrieNode {
 
-    // next value in current level
+    // Next node in current level
     private TrieNode next;
-    // each node's next lower level is another whole list
+    // Each node's next lower level is another whole list
     private TrieList down;
-    // since we're dealing in hex nibbles I imagine this needs to be an int
-    private char value;
-    // an int to store the phrase number this node holds
+
+    // The character to store
+    private char character;
+    // The phrase number to store
     private int phraseNum;
 
-    public TrieNode(char v, int p) {
+    /**
+     * Defines a node in the Trie structure
+     * 
+     * @param c The character to store
+     * @param p The phrase number to store
+     */
+    public TrieNode(char c, int p) {
         next = null;
         down = null;
-        value = v;
+        character = c;
         phraseNum = p;
         down = new TrieList();
     }
 
+    /**
+     * Gets the character
+     * 
+     * @return The character stored in this node
+     */
     public char getValue() {
-        return value;
+        return character;
     }
 
+    /**
+     * Gets the phrase number
+     * 
+     * @return The phrase number stored in this node
+     */
     public int getPhraseNumber() {
         return phraseNum;
     }
 
+    /**
+     * Gets the next node
+     * 
+     * @return The next node at this level
+     */
     public TrieNode getNext() {
         return next;
     }
 
+    /**
+     * Sets the next node for this node to the node specified
+     * 
+     * @param newNext The node to set next to
+     */
     public void setNext(TrieNode newNext) {
         this.next = newNext;
     }
 
+    /**
+     * Gets the children of this node.
+     * 
+     * @return The TrieList of children for this node
+     */
     public TrieList getDown() {
         return down;
     }
 
+    /**
+     * Sets the children to a new TrieList
+     * 
+     * @param newDown The TrieList to set this nodes children to
+     */
     public void setDown(TrieList newDown) {
         down = newDown;
     }
