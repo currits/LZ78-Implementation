@@ -1,6 +1,13 @@
 import java.io.*;
+/**
+ * LZunpack Class
+ * Takes standard input of a byte stream and unpacks the bytes into phrase-mismatch pairs, to standard output
+ */
 public class LZunpack {
 
+    /**
+     * Proccesses input into an array of bytes, then unpacks the bytes into phrase-mismatch paris
+     */
     public static void main(String[] args){
 
         // Variable to store the number of bits to needed to extract a phrase from input
@@ -9,7 +16,7 @@ public class LZunpack {
         int phraseCount = 0;
         System.err.println("Phrase bits: " + phraseBitCount);
         // Mismatched phrase is two hex digits, 8 bits
-        int mismatchedBitCount = 8;
+        int mismatchedBitCount = 4;
         // To track which rightmost bit we are packing from next (little endian)
         int bitPosition = 0;
         // AND mask to extract phrase bits bits from a 32 bit int, will be constantly recalculated

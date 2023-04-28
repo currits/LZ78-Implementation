@@ -1,6 +1,13 @@
 import java.io.*;
+/**
+ * LZpack Class
+ * Takes standard input of Phrase-mismatch tuples and bitpacks them to standard output
+ */
 public class LZpack {
     
+    /**
+     * Proccesses input into a bitpacked byte stream output
+     */
     public static void main(String[] args) {
 
 
@@ -9,7 +16,7 @@ public class LZpack {
         // Variable to keep a count of the number of phrases encountered, to recalculate the number of bits needed to encode a phrase
         int phraseCount = 0;
         // Mismatched phrase is two hex digits, 8 bits
-        int mismatchedBitCount = 8;
+        int mismatchedBitCount = 4;
         // To track which rightmost bit we are packing from next (little endian)
         int bitPosition = 0;
 
