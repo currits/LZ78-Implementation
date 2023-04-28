@@ -2,16 +2,12 @@ import java.io.*;
 public class LZpack {
     
     public static void main(String[] args) {
-        if (args.length == 0) {
-            System.out.println("Usage: LZpack <maxPhrases>");
-            System.out.println("maxPhrases:  The maximum number of phrases that the packer needs to account for");
-            return;
-        }
 
-        // Get number of phrases
-        int i = Integer.parseInt(args[0]);
-        // Calculate the ceiling of bits to encode that many phrases (log base 2 of phrase count)
-        int phraseBitCount = (int)Math.ceil((Math.log(i) / Math.log(2)));
+
+        // Variable to store the number of bits needed to encode a phrase to output
+        int phraseBitCount = 1;
+        // Variable to keep a count of the number of phrases encountered, to recalculate the number of bits needed to encode a phrase
+        int phraseCount = 0;
         // Mismatched phrase is two hex digits, 8 bits
         int mismatchedBitCount = 8;
         // To track which rightmost bit we are packing from next (little endian)
@@ -46,7 +42,6 @@ public class LZpack {
 
                 // while bit space available in output (32 - bitPos) is greater than bits needed to pack in a tuple (bitcount's sum)
                 while ((32 - bitPosition) >= (phraseBitCount + mismatchedBitCount)){
-                    System.err.println("read loop");
                     // Read in a tuple
                     line = reader.readLine();
                     // If we have read in nothing, or the null character signifying end of file, break
@@ -57,10 +52,8 @@ public class LZpack {
                     tuple = line.split("\\s+");
                     // Extract the bit value of the phrase number
                     phrase = Integer.parseInt(tuple[0]);
-                    System.err.println(phrase);
                     // And the mismatched character
                     mismatch = Integer.parseInt(tuple[1]);
-                    System.err.println(mismatch);
 
                     // Get the phrase into bit position
                     phrase = phrase << bitPosition;
@@ -74,18 +67,20 @@ public class LZpack {
                     output = output | mismatch;
                     // Shift bit position tracker by the number of bits reserved for mismatched chars (8)
                     bitPosition += mismatchedBitCount;
-                    // Then loop again
+
+                    // Increment the phrase count
+                    phraseCount++;
+                    // Recalulate the number of bits needed to encode the number of phrases encountered so far
+                    phraseBitCount = (int)Math.ceil((Math.log(phraseCount+1) / Math.log(2)));
                 }
 
                 // While there is enough useful bits (bitPos >= 8) and buffer is not near full, store some number of bytes into buffer
                 while (bufferIndex <= 62 && bitPosition >= 8){
-                    System.err.println("Write loop");
                     // Extract lower order 8 bits 
                     // AND mask to ensure lower order bits only, then cast to byte
                     byte out = (byte)(output & 0xFF);
                     // Write it to buffer
                     buffer[bufferIndex] = out;
-                    System.err.println(out);
                     // Increment buffer index tracker
                     bufferIndex++;
                     // Reduce the bit position by the number of written bits (a single byte)
@@ -97,13 +92,11 @@ public class LZpack {
 
             // Final write loop repeat to write all remaining bits in output feed
             while(bitPosition > 0){
-                System.err.println("Write loop");
                 // Extract lower order 8 bits 
                 // AND mask to ensure lower order bits only, then cast to byte
                 byte out = (byte)(output & 0xFF);
                 // Write it to buffer
                 buffer[bufferIndex] = out;
-                System.err.println(out);
                 // Increment buffer index tracker
                 bufferIndex++;
                 // Reduce the bit position by the number of written bits (a single byte)

@@ -2,23 +2,18 @@ import java.io.*;
 public class LZunpack {
 
     public static void main(String[] args){
-        if (args.length == 0) {
-            System.out.println("Usage: LZunpack <maxPhrases>");
-            System.out.println("maxPhrases:  The maximum number of phrases that the unpacker needs to account for");
-            return;
-        }
 
-        // Get number of phrases
-        int i = Integer.parseInt(args[0]);
-        // Calculate the ceiling of bits to encode that many phrases (log base 2 of phrase count)
-        int phraseBitCount = (int)Math.ceil((Math.log(i) / Math.log(2)));
+        // Variable to store the number of bits to needed to extract a phrase from input
+        int phraseBitCount = 1;
+        // Variable to keep a count of the number of phrases encountered, to recalculate the number of bits needed to extract a phrase
+        int phraseCount = 0;
         System.err.println("Phrase bits: " + phraseBitCount);
         // Mismatched phrase is two hex digits, 8 bits
         int mismatchedBitCount = 8;
         // To track which rightmost bit we are packing from next (little endian)
         int bitPosition = 0;
-        // AND mask to extract phrase bits bits from a 32 bit int
-        int phraseMask = ((int)Math.pow(2, phraseBitCount)) - 1;
+        // AND mask to extract phrase bits bits from a 32 bit int, will be constantly recalculated
+        int phraseMask = 0x1;
         System.err.println("Phrase mask: " + phraseMask);
         // AND mask to extract the mismatched character bits fron a 32 bit int
         int mismatchMask = 0xFF;
@@ -61,7 +56,6 @@ public class LZunpack {
                 // Populate the input with packed bits
                 // Only for as long there is space for at least a full byte
                 while (bitPosition <= 24){
-                    System.err.println("read loop");
                     // Check for end of input
                     if (streamIndex == streamCap-1){
                         loop = false;
@@ -69,7 +63,6 @@ public class LZunpack {
                     }
                     // Read in a byte
                     int in = inputStream[streamIndex];
-                    System.err.println(in);
                     // Mark it as proccessed by incrementing array index counter
                     streamIndex++;
                     // Left shift the input into position to be written into input
@@ -84,7 +77,6 @@ public class LZunpack {
                 // Loop to extract phrases and mismatched chars from input bits
                 // For as long as there is at least enough useful bits totalling a phrase-mismatch tuple
                 while ((bitPosition >= (phraseBitCount + mismatchedBitCount))){
-                    System.err.println("write loop");
                     // Extract phrase number with bit mask from lower most bits
                     int phrase = input & phraseMask;
                     // Shift the input along by phraseBits
@@ -98,13 +90,18 @@ public class LZunpack {
                     writer.newLine();
                     // Shift the bit position tracker by the length of bits extracted (phrase + mismatch bit length)
                     bitPosition -= (phraseBitCount + mismatchedBitCount);
+                    // Now incrememnt the phrase count
+                    phraseCount++;
+                    // Recalulate the number of bits needed to encode the number of phrases encountered so far
+                    phraseBitCount = (int)Math.ceil((Math.log(phraseCount+1) / Math.log(2)));
+                    // And rebuild the mask that can extract that number of bits
+                    phraseMask = ((int)Math.pow(2, phraseBitCount)) - 1;
                 }
             
             }
             
             // Final repeat of write loop to capture remain bits (often just a phrase number and then a null character)
             while (bitPosition > 0){
-                System.err.println("write loop");
                 // Extract phrase number with bit mask from lower most bits
                 int phrase = input & phraseMask;
                 // Shift the input along by phraseBits
