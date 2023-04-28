@@ -51,11 +51,8 @@ public class HexCoder {
                 sb.append((char) digit1);
                 sb.append((char) digit2);
 
-                try {
-                    writer.write(Integer.parseInt(sb.toString().trim(), 16));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                writer.write(Integer.parseInt(sb.toString().trim(), 16));
+
             }
 
             /*
