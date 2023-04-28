@@ -41,23 +41,37 @@ public class HexCoder {
         }
         // if decoding to ascii
         else if (param == 1) {
+            int digit1;
+            int digit2;
 
-            StringBuilder sb = new StringBuilder();
+            while ((digit1 = reader.read()) != -1) {
+                digit2 = reader.read();
 
-            String hex = reader.readLine();
+                StringBuilder sb = new StringBuilder();
+                sb.append((char) digit1);
+                sb.append((char) digit2);
 
-            for (int i = 0; i < hex.length() - 1; i += 2) {
+                writer.write(Integer.parseInt(sb.toString().trim(), 16));
 
-                // Grab the hex in pairs
-                String output = hex.substring(i, (i + 2));
-                // Convert hex to int
-                int decimal = Integer.parseInt(output, 16);
-                // Convert and add to string
-                sb.append((char) decimal);
             }
 
-            writer.write(sb.toString());
-
+            /*
+             * StringBuilder sb = new StringBuilder();
+             * 
+             * String hex = reader.readLine();
+             * 
+             * for (int i = 0; i < hex.length() - 1; i += 2) {
+             * 
+             * // Grab the hex in pairs
+             * String output = hex.substring(i, (i + 2));
+             * // Convert hex to int
+             * int decimal = Integer.parseInt(output, 16);
+             * // Convert and add to string
+             * sb.append((char) decimal);
+             * }
+             * 
+             * writer.write(sb.toString());
+             */
             /*
              * int c1 = 0;
              * int c2 = 0;
