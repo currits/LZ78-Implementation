@@ -1,9 +1,12 @@
+
+///Name:
+///ID:
+///Name: Ethyn Gillies
+///ID: 1503149
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
 public class LZdecode {
@@ -13,11 +16,13 @@ public class LZdecode {
         // Dictionary to build and read to
         ArrayList<String> dictionary = new ArrayList<String>();
 
+        // IO
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         BufferedOutputStream writer = new BufferedOutputStream(System.out);
 
         String line;
 
+        // While there is data left to read
         while ((line = reader.readLine()) != null) {
 
             // If the line is ever empty, we have finished
@@ -31,6 +36,8 @@ public class LZdecode {
             // Splitting into int for phrase and char for character
             int phrase = Integer.parseInt(strings[0]);
 
+            // If the mismatch is -1, we are at the end of the file and just need to output
+            // the phrase number
             if (strings[1].equals(Integer.toString(-1))) {
                 write(writer, dictionary.get(phrase - 1));
                 break;
@@ -57,10 +64,20 @@ public class LZdecode {
         reader.close();
     }
 
+    /**
+     * Writes the entirety of a string to the output stream a byte at a time,
+     * parsing as hex digits
+     * 
+     * @param writer The output stream to write to
+     * @param s      The string we are writing
+     * @throws IOException
+     */
     private static void write(BufferedOutputStream writer, String s) throws IOException {
 
+        // Splits the string into an array of strings, each with a single character
         String[] array = s.split("");
 
+        // Writes each character to the output stream parsed as a hex digit
         for (String string : array) {
             writer.write(Integer.parseInt(string, 16));
         }
