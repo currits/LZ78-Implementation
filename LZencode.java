@@ -24,8 +24,20 @@ public class LZencode {
         // The current node we are at
         TrieNode currNode;
 
-        while ((in = reader.read()) != -1) {
+        while (true) {
 
+            in = reader.read();
+            //if end of stream
+            if (in == -1){
+                //check if we have matched phrases so far
+                if (lastPhrase != 0){
+                    //if so, write the phrase with null character as mismatch, signifying end of stream
+                    writer.write(lastPhrase + " " + (int)'\0');
+                    writer.newLine();
+                }
+                //then stop looping
+                break;
+            }
             // Get the current character
             char c = (char) in;
 
