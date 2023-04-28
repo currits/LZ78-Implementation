@@ -1,3 +1,4 @@
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -13,7 +14,7 @@ public class LZdecode {
         ArrayList<String> dictionary = new ArrayList<String>();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        BufferedOutputStream writer = new BufferedOutputStream(System.out);
 
         String line;
 
@@ -29,24 +30,24 @@ public class LZdecode {
 
             // Splitting into int for phrase and char for character
             int phrase = Integer.parseInt(strings[0]);
-            char mismatch = (char) Integer.parseInt(strings[1]);
-            //if the mismatch if null character, then we have reached end of stream
-            if (Character.compare(mismatch, '\0') == 0){
-                //so write the phrase and break
-                writer.write(dictionary.get(phrase - 1));
+
+            if (strings[1].equals(Integer.toString(-1))) {
+                write(writer, dictionary.get(phrase - 1));
                 break;
             }
-            
+
+            // Converting the decimal representation of the hex digit to an actual hex digit
+            String mismatch = Integer.toHexString(Integer.parseInt(strings[1]));
 
             // If the phrase is 0, we can just add it and add the value to the dictionary
             if (phrase == 0) {
-                dictionary.add(String.valueOf(mismatch));
-                writer.write(mismatch);
+                dictionary.add(mismatch);
+                write(writer, mismatch);
             } else {
                 // First we write the entry in the dictionary the phrase number points to then
                 // the mismatch
-                writer.write(dictionary.get(phrase - 1));
-                writer.write(mismatch);
+                write(writer, dictionary.get(phrase - 1));
+                write(writer, mismatch);
 
                 // Then we add the mismatch to the dictionary along with the phrase before it
                 dictionary.add(dictionary.get(phrase - 1) + mismatch);
@@ -54,5 +55,14 @@ public class LZdecode {
         }
         writer.close();
         reader.close();
+    }
+
+    private static void write(BufferedOutputStream writer, String s) throws IOException {
+
+        String[] array = s.split("");
+
+        for (String string : array) {
+            writer.write(Integer.parseInt(string, 16));
+        }
     }
 }
