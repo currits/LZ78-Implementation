@@ -1,3 +1,4 @@
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -7,7 +8,7 @@ import java.io.OutputStreamWriter;
 public class LZencode {
 
     public static void main(String[] args) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedInputStream reader = new BufferedInputStream(System.in);
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
 
         // Creating the top level list and creating a pointer for the current list we
@@ -27,19 +28,25 @@ public class LZencode {
         while (true) {
 
             in = reader.read();
-            //if end of stream
-            if (in == -1){
-                //check if we have matched phrases so far
-                if (lastPhrase != 0){
-                    //if so, write the phrase with null character as mismatch, signifying end of stream
-                    writer.write(lastPhrase + " " + (int)'\0');
+            // if end of stream
+            if (in == -1) {
+                // check if we have matched phrases so far
+                if (lastPhrase != 0) {
+                    // if so, write the phrase with null character as mismatch, signifying end of
+                    // stream
+                    writer.write(lastPhrase + " " + -1);
                     writer.newLine();
                 }
-                //then stop looping
+                // then stop looping
                 break;
             }
             // Get the current character
-            char c = (char) in;
+            // Its okay to use tohexstring here since only one hex digit will ever be read
+            // at each step; we dont have to worry about 0 padding here
+            String s1 = Integer.toHexString(in);
+
+            // Converting to char type for trie
+            char c = s1.charAt(0);
 
             // If we cant find the character at this level, it needs to be added
             if ((currNode = currList.find(c)) == null) {
@@ -51,7 +58,7 @@ public class LZencode {
                 // Writing the LZ78 dictionary to out (in decimal format)
                 // The last phrase will always be the phrase of the characters parent, for case
                 // 0, the parent is the null character
-                writer.write(lastPhrase + " " + (int) c);
+                writer.write(lastPhrase + " " + Integer.parseInt(String.valueOf(c), 16));
                 writer.newLine();
 
                 // Resetting last phrase to 0 and the list to the top level list
