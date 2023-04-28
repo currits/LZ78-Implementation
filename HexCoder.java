@@ -26,32 +26,49 @@ public class HexCoder {
         }
 
         // Reader and writer for in and out
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        BufferedInputStream reader = new BufferedInputStream(System.in);
+        BufferedOutputStream writer = new BufferedOutputStream(System.out);
 
         // if encoding to hex
         if (param == 0) {
-            int c;
+            int digit;
 
-            while ((c = reader.read()) != -1) {
-                // Regex formatting into hexadecimal
-                String hex = String.format("%02x", c);
-                writer.write(hex);
+            while ((digit = reader.read()) != -1) {
+                // String format into a decimal string, will always have 2 characters
+                String hex = String.format("%02X", digit);
+
+                // Spliting the two characters up into hex digits
+                String s1 = hex.substring(0, 1);
+                String s2 = hex.substring(1);
+
+                // Writing each hex digit as a byte, while the bytes will be 8 bits long, only 4
+                // bits are used for each byte since they only will ever take up 4 bits of space
+                // It essentially splits the hex in half!
+                writer.write(Integer.parseInt(s1, 16));
+                writer.write(Integer.parseInt(s2, 16));
             }
         }
-        // if decoding to ascii
+        // if decoding to bytes
         else if (param == 1) {
             int digit1;
             int digit2;
 
+            // We can grab both digits as if the first digit is readable, the second always
+            // will be
+            // This is because we ensured that 2 hex digits were always printed in the
+            // encoding step
             while ((digit1 = reader.read()) != -1) {
+
                 digit2 = reader.read();
 
-                StringBuilder sb = new StringBuilder();
-                sb.append((char) digit1);
-                sb.append((char) digit2);
+                try {
+                    String s1 = Integer.toHexString(digit1);
+                    String s2 = Integer.toHexString(digit2);
 
-                writer.write(Integer.parseInt(sb.toString().trim(), 16));
+                    writer.write(Integer.parseInt(s1 + s2, 16));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
             }
 
