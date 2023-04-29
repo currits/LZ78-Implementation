@@ -1,3 +1,4 @@
+
 ///Name: Kurtis-Rae Mokaraka
 ///ID: 1256115
 ///Name: Ethyn Gillies
@@ -6,6 +7,13 @@ import java.io.*;
 
 public class HexCoder {
 
+    /**
+     * Takes an input stream of bytes or hex digits and converts to the other type.
+     * 0 for byte to hex conversion, 1 for hex to byte conversion
+     * 
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
 
         // Checking if arg length is correct
@@ -62,22 +70,12 @@ public class HexCoder {
 
                 digit2 = reader.read();
 
-                try {
-                    // Converting each digit into a string so they can be combined
-                    String s1 = Integer.toHexString(digit1);
-                    String s2 = Integer.toHexString(digit2);
+                // Converting each digit into a string so they can be combined
+                String s1 = Integer.toHexString(digit1);
+                String s2 = Integer.toHexString(digit2);
 
-                    // Parsing the combined digits as a hex byte and writing to output
-                    writer.write(Integer.parseInt(s1 + s2, 16));
-                } catch (Exception e) {
-
-                    // For some reason, a byte will appear occasionally that does not exist in the
-                    // text data and cannot be parsed. We couldnt figure out where it was coming
-                    // from, but if skipped, does not change the size of the outputted file. even
-                    // when this error appears, the resulting file is identical to the input. Its
-                    // almost like the byte is appearing out of thin air!
-                    e.printStackTrace();
-                }
+                // Parsing the combined digits as a hex byte and writing to output
+                writer.write(Integer.parseInt(s1 + s2, 16));
 
             }
         } else {

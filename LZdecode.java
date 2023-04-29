@@ -11,6 +11,13 @@ import java.util.ArrayList;
 
 public class LZdecode {
 
+    /**
+     * Decodes LZ78 compression from sister program LZencode back to a stream of hex
+     * digits
+     * 
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
 
         // Dictionary to build and read to

@@ -12,6 +12,13 @@ import java.io.OutputStreamWriter;
 
 public class LZencode {
 
+    /**
+     * Encodes a hex stream from system.in using the LZ78 algorithm, sending to
+     * system.out
+     * 
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         // IO
         BufferedInputStream reader = new BufferedInputStream(System.in);
