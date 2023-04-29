@@ -9,6 +9,7 @@ public class HexCoder {
 
     public static void main(String[] args) throws IOException {
 
+        // Checking if arg length is correct
         if (args.length == 0) {
             System.out.println("Usage: HexCoder {0|1}");
             System.out.println("0:  Encodes Standard input stream into Hexadecimal");
@@ -18,6 +19,7 @@ public class HexCoder {
 
         int param = -1;
 
+        // Checking if paramater is of type int
         try {
             param = Integer.parseInt(args[0]);
         } catch (Exception e) {
@@ -62,67 +64,23 @@ public class HexCoder {
                 digit2 = reader.read();
 
                 try {
+                    // Converting each digit into a string so they can be combined
                     String s1 = Integer.toHexString(digit1);
                     String s2 = Integer.toHexString(digit2);
 
+                    // Parsing the combined digits as a hex byte and writing to output
                     writer.write(Integer.parseInt(s1 + s2, 16));
                 } catch (Exception e) {
+
+                    // For some reason, a byte will appear occasionally that does not exist in the
+                    // text data and cannot be parsed. We couldnt figure out where it was coming
+                    // from, but if skipped, does not change the size of the outputted file. even
+                    // when this error appears, the resulting file is identical to the input. Its
+                    // almost like the byte is appearing out of thin air!
                     e.printStackTrace();
                 }
 
             }
-
-            /*
-             * StringBuilder sb = new StringBuilder();
-             * 
-             * String hex = reader.readLine();
-             * 
-             * for (int i = 0; i < hex.length() - 1; i += 2) {
-             * 
-             * // Grab the hex in pairs
-             * String output = hex.substring(i, (i + 2));
-             * // Convert hex to int
-             * int decimal = Integer.parseInt(output, 16);
-             * // Convert and add to string
-             * sb.append((char) decimal);
-             * }
-             * 
-             * writer.write(sb.toString());
-             */
-            /*
-             * int c1 = 0;
-             * int c2 = 0;
-             * 
-             * // We can read a second character inside the while loop since it will always
-             * be
-             * // non-null due to eacha ascii character needing 2 hex digits
-             * try {
-             * while ((c1 = reader.read()) != -1) {
-             * 
-             * if ((c2 = reader.read()) == -1) {
-             * continue;
-             * }
-             * 
-             * // Create a string with both characters (we trim it because read() works
-             * weird
-             * // sometimes
-             * String str = ("" + (char) c1 + (char) c2).trim();
-             * 
-             * // Check if the string is empty, if not, parse it as a character using radix
-             * 16
-             * // (base16 aka hexadecimal)
-             * if (!str.equals("")) {
-             * writer.write((char) Integer.parseInt(str, 16));
-             * }
-             * }
-             * } catch (Exception e) {
-             * System.out.println(c1);
-             * System.out.println(c2);
-             * e.printStackTrace();
-             * return;
-             * }
-             */
-
         } else {
             System.out.println("Usage: HexCoder {0|1}");
             System.out.println("0:  Encodes Standard input stream into Hexadecimal");

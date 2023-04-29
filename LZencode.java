@@ -1,3 +1,8 @@
+
+///Name:
+///ID:
+///Name: Ethyn Gillies
+///ID: 1503149
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -8,6 +13,7 @@ import java.io.OutputStreamWriter;
 public class LZencode {
 
     public static void main(String[] args) throws IOException {
+        // IO
         BufferedInputStream reader = new BufferedInputStream(System.in);
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
 
@@ -27,7 +33,9 @@ public class LZencode {
 
         while (true) {
 
+            // Read a byte
             in = reader.read();
+
             // if end of stream
             if (in == -1) {
                 // check if we have matched phrases so far
@@ -56,7 +64,7 @@ public class LZencode {
                 currList.insert(new TrieNode(c, phraseNum++));
 
                 // Writing the LZ78 dictionary to out (in decimal format)
-                // The last phrase will always be the phrase of the characters parent, for case
+                // The lastPhrase will always be the phrase of the characters parent, for case
                 // 0, the parent is the null character
                 writer.write(lastPhrase + " " + Integer.parseInt(String.valueOf(c), 16));
                 writer.newLine();
