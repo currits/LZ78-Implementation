@@ -59,8 +59,18 @@ public class LZpack {
                     tuple = line.split("\\s+");
                     // Extract the bit value of the phrase number
                     phrase = Integer.parseInt(tuple[0]);
-                    // And the mismatched character
                     mismatch = Integer.parseInt(tuple[1]);
+
+                    // Check if we read a phrase number on its own (end of file mid phrase match)
+                    if (mismatch == -1){
+                        System.err.println("phrase only detected");
+                        // If so, store the phrase int output
+                        phrase = phrase << bitPosition;
+                        output = output | phrase;
+                        bitPosition += phraseBitCount;
+                        // And break
+                        break;
+                    }
 
                     // Get the phrase into bit position
                     phrase = phrase << bitPosition;
@@ -99,6 +109,7 @@ public class LZpack {
 
             // Final write loop repeat to write all remaining bits in output feed
             while(bitPosition > 0){
+                System.err.println("Final loop write");
                 // Extract lower order 8 bits 
                 // AND mask to ensure lower order bits only, then cast to byte
                 byte out = (byte)(output & 0xFF);
