@@ -1,3 +1,7 @@
+///Name: Kurtis-Rae Mokaraka
+///ID: 1256115
+///Name: Ethyn Gillies
+///ID: 1503149
 import java.io.*;
 /**
  * LZunpack Class
@@ -23,7 +27,7 @@ public class LZunpack {
         int phraseMask = 0x1;
         System.err.println("Phrase mask: " + phraseMask);
         // AND mask to extract the mismatched character bits fron a 32 bit int
-        int mismatchMask = 0xFF;
+        int mismatchMask = 0xF;
 
         try {
             // Writer for writing to system.out
@@ -63,11 +67,6 @@ public class LZunpack {
                 // Populate the input with packed bits
                 // Only for as long there is space for at least a full byte
                 while (bitPosition <= 24){
-                    // Check for end of input
-                    if (streamIndex == streamCap-1){
-                        loop = false;
-                        break;
-                    }
                     // Read in a byte
                     int in = inputStream[streamIndex];
                     // Mark it as proccessed by incrementing array index counter
@@ -77,6 +76,24 @@ public class LZunpack {
                     in = (in & 0xFF) << bitPosition;
                     // OR it into place
                     input = input | in;
+                    
+                    // When end of stream and reading in the last byte, need to precisely shift bitPos
+                    if (streamIndex == streamCap){
+                        in = in >>> bitPosition;
+                        System.err.println("loopy: " + in);
+                        // Get the number of bits required to encode the value that was read in
+                        // And shift by exactly that many
+                        System.err.println("loopy bit pos before: " + bitPosition);
+                        if (in != 0){
+
+                            bitPosition += (int)Math.ceil((Math.log(in) / Math.log(2)));
+                        }
+                        // End of input, so need to stop looping
+                        loop = false;
+                        System.err.println("loopy bit pos after: " + bitPosition);
+                        // Then break from this loop
+                        break;
+                    }
                     // Move the bit position tracker over by a byte
                     bitPosition += 8;
                 }
@@ -107,21 +124,16 @@ public class LZunpack {
             
             }
             
-            // Final repeat of write loop to capture remain bits (often just a phrase number and then a null character)
-            while (bitPosition > 0){
+            // Final repeat of write loop to capture remain bits (often just a phrase number and then end of stream)
+            if (bitPosition > 0){
+                System.err.println("Final loop");
                 // Extract phrase number with bit mask from lower most bits
                 int phrase = input & phraseMask;
-                // Shift the input along by phraseBits
-                input = input >>> phraseBitCount;
-                // Extract the mismatched character with bit mask from lower order bits
-                int mismatch = input & mismatchMask;
-                // Shift the input along by mismatchBits
-                input = input >>> mismatchedBitCount;
                 // Write the tuple to output with formatting (space seperated strings, new line)
-                writer.write(phrase + " " + mismatch);
+                writer.write(phrase + " -1");
                 writer.newLine();
                 // Shift the bit position tracker by the length of bits extracted (phrase + mismatch bit length)
-                bitPosition -= (phraseBitCount + mismatchedBitCount);
+                bitPosition -= (phraseBitCount);
             }
 
             System.err.println("Bits left: " + bitPosition);
